@@ -14,7 +14,7 @@ import { Provider } from 'react-redux';
 import { ThemeProvider } from '@hx/noxus';
 
 import store from './src/store';
-import sage from './src/sage';
+import sage from './src/effects';
 import Demo from './src/demo.tsx';
 
 store.runSaga(sage);

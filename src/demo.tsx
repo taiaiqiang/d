@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { Button, Loading } from '@hx/noxus';
 
+import actions from './actions';
 
 type Props = {
     auth: {
@@ -69,16 +70,16 @@ export default class Demo extends Component<Props> {
         const { isLogin, name } = this.props.userinfo;
         return (
             <View style={styles.container}>
-                <Button style={styles.button} onPress={() => this.props.dispatch({ type: 'login' })}>
+                <Button style={styles.button} onPress={actions.login}>
                     登录
                 </Button>
-                <Button style={styles.button} onPress={() => { this.props.dispatch({ type: 'logout' }); }}>
+                <Button style={styles.button} onPress={actions.logout}>
                     注销
                          </Button>
-                <Button style={styles.button} onPress={() => { this.props.dispatch({ type: 'login/cancel' }); }}>
+                <Button style={styles.button} onPress={actions.cancelLogin}>
                     取消登录
                          </Button>
-                <Button style={styles.button} onPress={() => { this.props.dispatch({ type: 'logout/cancel' }); }}>
+                <Button style={styles.button} onPress={actions.cancelLogout}>
                     取消注销
                          </Button>
                 <Loading visible={loading} text="..." />
