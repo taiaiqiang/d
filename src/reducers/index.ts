@@ -10,7 +10,7 @@ type action = {
 }
 type statusProps = {
     [module: string]: {
-        [filed: string]: {
+        [field: string]: {
             loading: boolean,
             cancle: boolean,
             updateTime: Date
@@ -24,8 +24,8 @@ const defaultState: any = {
 const defaultStatusState: statusProps = {};
 
 const autoHandleReducers = (module: string, fields: Array<string>) => (state: any = defaultState[module], action: action, ) => {
-    const { type, payload } = action;
-    const field = type.split('/')[0] || '';
+    const { type, payload,field } = action;
+   // const field = type.split('/')[0] || '';
 
     if (fields.includes(field) && !_.isEqual(state[field], payload)) {
         return { ...state, [field]: Object.assign({}, state[field], payload) };
@@ -59,17 +59,18 @@ modules.forEach(item => {
 export default combineReducers({
     ...reducers,
     loading(state = defaultStatusState, action: action) {
-        const { type, module, originActionType } = action;
-        const [filed, status = 'success',] = type.split('/');
+        const { type, module, field } = action;
+        
+        const [realType, status = '',] = type.split('/');
         switch (true) {
             case status === 'request':
-                return _.defaultsDeep({}, { [module]: { [filed]: { loading: true } } }, state);
+                return _.defaultsDeep({}, { [module]: { [field]: { loading: true } } }, state);
             case status === 'success':
-                return _.defaultsDeep({}, { [module]: { [filed]: { loading: false } } }, state);
+                return _.defaultsDeep({}, { [module]: { [field]: { loading: false } } }, state);
             case status === 'error':
-                return _.defaultsDeep({}, { [module]: { [filed]: { loading: false } } }, state);
+                return _.defaultsDeep({}, { [module]: { [field]: { loading: false } } }, state);
             case status === 'cancel':
-                return _.defaultsDeep({}, { [module]: { [filed]: { loading: false } } }, state)
+                return _.defaultsDeep({}, { [module]: { [field]: { loading: false } } }, state)
 
             default:
                 return state;

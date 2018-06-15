@@ -4,7 +4,7 @@ type baseParams = {
     success?: boolean,
     data?: any
 };
-const Base = ({ delay = 5000, success = true, data }: baseParams) => new Promise((resolve, reject) => {
+const Base = ({ delay = 1000, success = true, data }: baseParams) => new Promise((resolve, reject) => {
     setTimeout(() => {
         if (success) {
             resolve(data)

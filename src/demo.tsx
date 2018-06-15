@@ -73,7 +73,7 @@ export default class Demo extends Component<Props> {
             <View style={styles.container}>
                 <Button style={styles.button} onPress={() => {
                     const loginTaskId = actions.login();
-                    setTimeout(clearEffectsTask, 2000, loginTaskId);
+                    //setTimeout(clearEffectsTask, 2000, loginTaskId);
                 }}>
                     登录
                 </Button>

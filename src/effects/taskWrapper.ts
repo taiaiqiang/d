@@ -7,18 +7,18 @@ interface params { module: string, field: string, type: string, api: any };
 
 const taskWrapper = ({ module, field, type, api }: params) => function* taskWrappe() {
     try {
-        yield put(actionWrapper({ module, field, originActionType: type, status: 'request', }));
+        yield put(actionWrapper({ module, field, type, status: 'request', }));
         const loginRes = yield call(api);
-        yield put(actionWrapper({ module, field, originActionType: type, payload: loginRes }));
+        yield put(actionWrapper({ module, field, type, payload: loginRes }));
     }
     catch (e) {
         //登录失败
-        yield put(actionWrapper({ module, field, originActionType: type, status: 'error' }));
+        yield put(actionWrapper({ module, field, type, status: 'error' }));
     }
     finally {
         //取消登录
         if (yield cancelled())
-            yield put(actionWrapper({ module, field, originActionType: type, status: 'cancel' }));
+            yield put(actionWrapper({ module, field, type, status: 'cancel' }));
     }
 }
 
