@@ -4,7 +4,15 @@ import rootReducer from '../reducers';
 
 const sagaMiddleware = createSagaMiddleware({});
 
-export default {
+interface store {
+  dispatch: Function,
+  runSaga: Function,
+  [otherProps: string]: any
+}
+
+const store: store = {
   ...createStore(rootReducer, applyMiddleware(sagaMiddleware)),
   runSaga: sagaMiddleware.run,
-}
+};
+
+export default store;

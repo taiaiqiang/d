@@ -5,11 +5,6 @@
  */
 
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from '@hx/noxus';
 
@@ -27,7 +22,6 @@ export default class App extends Component {
           <Demo />
         </ThemeProvider>
       </Provider>
-
     );
   }
 }

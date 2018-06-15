@@ -12,11 +12,12 @@ import {
 } from 'react-native';
 import { Button, Loading } from '@hx/noxus';
 
+import { clearEffectsTask } from './effects';
 import actions from './actions';
 
-type Props = {
+interface Props {
     auth: {
-        [fieldName: string]: any
+        readonly [fieldName: string]: any
     },
     userinfo: {
         isLogin: boolean,
@@ -70,7 +71,10 @@ export default class Demo extends Component<Props> {
         const { isLogin, name } = this.props.userinfo;
         return (
             <View style={styles.container}>
-                <Button style={styles.button} onPress={actions.login}>
+                <Button style={styles.button} onPress={() => {
+                    const loginTaskId = actions.login();
+                    setTimeout(clearEffectsTask, 2000, loginTaskId);
+                }}>
                     登录
                 </Button>
                 <Button style={styles.button} onPress={actions.logout}>

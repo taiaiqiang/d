@@ -23,7 +23,6 @@ function* () {
     while (true) {
         //监听登录注销action
         const { type } = yield take(['login', 'logout', 'login/cancel', 'logout/cancel']);
-
         switch (type) {
             case 'login':
                 //撤销注销行为
@@ -31,7 +30,14 @@ function* () {
                     yield cancel(logoutTaskTag);
                 }
                 //开始登陆
-                loginTaskTag = yield fork(loginTask, 'login');
+                loginTaskTag = yield fork(
+                    taskWrapper({
+                        module: 'auth',
+                        field: 'userinfo',
+                        type: 'login',
+                        api: api.login
+                    })
+                );
                 break;
             case 'logout':
                 //撤销登录行为
@@ -39,7 +45,14 @@ function* () {
                     yield cancel(loginTaskTag);
                 }
                 //开始注销
-                logoutTaskTag = yield fork(logoutTask, 'logout');
+                logoutTaskTag = yield fork(
+                    taskWrapper({
+                        module: 'auth',
+                        field: 'userinfo',
+                        type: 'login',
+                        api: api.logout
+                    })
+                );
             case 'login/cancel':
                 //撤销登录行为
                 if (loginTaskTag) {
@@ -56,35 +69,17 @@ function* () {
 
     }
 }
+
+//你也可以不通过发送对应的取消action来撤销任务,直接通过`clearEffectsTask`
+const loginTaskId = actions.login();
+setTimeout(clearEffectsTask, 2000, loginTaskId);
+
 ```
-3. 你可以发送任意的的action,只不过是否捕获此请求和如何处理掌握在自己手里,下面看看捕获login的loginTask干了些什么
-```js
-const createCommonActionWrapperParams = (type: string) => ({
-    module: 'auth',
-    originActionType: type,
-    type: 'userinfo',
-});
-function* loginTask(type: string) {
-    try {
-        yield put(actionWrapper({ ...createCommonActionWrapperParams(type), status: 'request' }));
-        const loginRes = yield call(api.login);
-        yield put(actionWrapper({ ...createCommonActionWrapperParams(type), payload: loginRes }));
-    }
-    catch (e) {
-        //登录失败
-        yield put(actionWrapper({ ...createCommonActionWrapperParams(type), status: 'error' }));
-    }
-    finally {
-        //取消登录
-        if (yield cancelled())
-            yield put(actionWrapper({ ...createCommonActionWrapperParams(type), status: 'cancel' }));
-    }
-}
-```
-    1. 先发送了一个status为request的action
-    2. 在接口数据返回时发送status为success的action(status缺省值为success)
-    3. 下面的catch和finally分别是login失败和取消的逻辑
-    4. createCommonActionWrapperParams中的三个key分别为数据存储的模块名、导致存储的源action.type(即login)、数据存储的模块名的字段名
+3. 你可以在监听到对应的action时处理自己的任务通过`taskWrapper`
+
+    1. taskWrapper接受的module、field会将数据存储为对应的路径
+    2. api则会调用执行并将执行的结构存储在路径中
+    
 
 4. 来看一下如何在组件中取存在redux中的数据
 ```js
